@@ -1,5 +1,6 @@
 <?php
 include 'config.php';
+date_default_timezone_set('Asia/Jakarta');
 session_start();
 if (!isset($_SESSION['id_user'])) {
   header("Location: login.php");
@@ -22,13 +23,18 @@ if (!isset($_SESSION['id_user'])) {
 </style>
 <body class="container mx-auto bg-blue-500 text-black min-h-screen font-[sans-serif]">
   <!-- Header -->
+  <?php
+      $id_user = $_SESSION['id_user'];
+      $saldo = $koneksi->query("SELECT * FROM user WHERE id_user = '$id_user'");
+      $row = $saldo->fetch_assoc();
+      ?>
   <header class="bg-blue-500 text-white p-2">
     <div class="container mx-auto flex justify-between items-center">
       <h3 class="text-xl font-bold">Hi! <?=$_SESSION['name_user']?></h3>
       <!-- profile -->
       <div class="relative">
         <button id="openpopup" type="button" class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-          <img src="profile.jpg" class="w-10 h-10 rounded-full" alt="">
+          <img src="img/<?php if($row['image_user'] == '-'){echo 'user.png';}else{echo 'profile/'.$row['image_user'];}?>" class="w-10 h-10 rounded-full" alt="">
         </button>
         <div id="popup" class="container opacity-0 pointer-events-none absolute right-0 z-30 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none transition-opacity duration-300" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
             <!-- Active: "bg-gray-100 outline-none", Not Active: "" -->
@@ -39,7 +45,7 @@ if (!isset($_SESSION['id_user'])) {
              </div>
             
              <a href="profile.php" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+            <a href="logout.php" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
             
             
         </div>
@@ -51,11 +57,6 @@ if (!isset($_SESSION['id_user'])) {
   <!-- Main Content -->
   <main class="container opacity-80 mx-auto absolute z-20 mt-4 p-4">
     <div class="bg-white shadow-md rounded-lg p-4">
-      <?php
-      $id_user = $_SESSION['id_user'];
-      $saldo = $koneksi->query("SELECT * FROM user WHERE id_user = '$id_user'");
-      $row = $saldo->fetch_assoc();
-      ?>
       <h2 class="text-xl font-semibold mb-2 text-center">Sisa Uang Kamu</h2>
       <h2 class="text-2xl font-[monospace] mb-[40px]">Rp <?php echo number_format($row['saldo_user'], 0, ',', '.'); ?></h2>
       <div class="flex justify-center gap-8">
@@ -218,18 +219,39 @@ if (!isset($_SESSION['id_user'])) {
                   <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
                 </svg>
                 </span>
-                <input type="text" id="website-admin" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Catatan 1">
+                <input type="text" id="website-admin" name="judul" class="rounded-none rounded-e-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Catatan 1">
             </div>
             </div>
             <div class="mb-4">
               <label for="message" class="block mb-2 text-sm font-medium text-black">Your message</label>
-              <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Leave a comment..."></textarea>
+              <textarea id="message" name="catatan" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Leave a comment..."></textarea>
             </div>
           
             <div class="mb-4 flex">
-                <button name="submit" class="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">Save</button>
+                <button name="submitcatatan" class="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none">Save</button>
             </div>
             </form>
+            <?php
+            if (isset($_POST['submitcatatan'])) {
+              $id_user = $_SESSION['id_user'];
+              $judul = $_POST['judul'];
+              $keterangan = $_POST['catatan'];
+              $tanggal = date("d-m-Y");
+
+              // $select = $koneksi->query("SELECT * FROM user WHERE id_user = '$id_user'");
+              // $row = $select->fetch_assoc();
+              // $saldobaru = $row['saldo_user'] + $saldo;
+
+              $query = $koneksi->query("INSERT INTO catatan(id_user, judul_catatan, catatan, tanggal_catatan) VALUES('$id_user', '$judul', '$keterangan', '$tanggal')");
+              if ($query) {
+                // $koneksi->query("UPDATE user SET saldo_user = '$saldobaru' WHERE id_user = '$id_user'");
+                echo '<script>alert("Data Berhasil di tambah")</script>';
+                echo '<script>window.location.href = "index.php";</script>';
+                exit;
+              }
+
+            }
+            ?>
         </div>
       </div>
     </div>
@@ -249,62 +271,33 @@ if (!isset($_SESSION['id_user'])) {
       <div class="overflow-x-auto h-[350px]">
       <div class="flex space-x-4">
         <!-- Card 1 -->
+         <?php
+         $querycatatan = $koneksi->query("SELECT * FROM catatan WHERE id_user = '$id_user'");
+         if (mysqli_num_rows($querycatatan) > 0) {
+          while ($rowcatatan = $querycatatan->fetch_assoc()) {
+          ?>
         <div class="w-[200px] bg-blue-100 shadow-md rounded-lg p-4">
-          <button class="pb-2">
+          <a href="hapus.php?jenis=catatan&id=<?=$rowcatatan['id_catatan']?>" class="pb-2">
           <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="18px" height="18px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
               <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
           </svg>
-          </button>
-          <h2 class="text-lg font-semibold text-center">Client 1</h2>
+          </a>
+          <h2 class="text-lg font-semibold text-center"><?=$rowcatatan['judul_catatan']?></h2>
           <p class="text-sm text-gray-600 text-center font-[cursive]">
-            "Tailwind CSS makes everything easier for modern web development!"
+            <?=$rowcatatan['catatan']?>
           </p>
           <p class="pt-6 text-sm text-gray-600 text-center">
-            01-12-2024
+            <?=$rowcatatan['tanggal_catatan']?>
           </p>
         </div>
-        <div class="w-[200px] bg-blue-100 shadow-md rounded-lg p-4">
-          <button class="pb-2">
-          <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="18px" height="18px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-          </svg>
-          </button>
-          <h2 class="text-lg font-semibold text-center">Client 1</h2>
-          <p class="text-sm text-gray-600 text-center font-[cursive]">
-            "Tailwind CSS makes everything easier for modern web development!"
-          </p>
-          <p class="pt-6 text-sm text-gray-600 text-center">
-            01-12-2024
-          </p>
-        </div>
-        <div class="w-[200px] bg-blue-100 shadow-md rounded-lg p-4">
-          <button class="pb-2">
-          <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="18px" height="18px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-          </svg>
-          </button>
-          <h2 class="text-lg font-semibold text-center">Client 1</h2>
-          <p class="text-sm text-gray-600 text-center font-[cursive]">
-            "Tailwind CSS makes everything easier for modern web development!"
-          </p>
-          <p class="pt-6 text-sm text-gray-600 text-center">
-            01-12-2024
-          </p>
-        </div>
-        <div class="w-[200px] bg-blue-100 shadow-md rounded-lg p-4">
-          <button class="pb-2">
-          <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="18px" height="18px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-              <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-          </svg>
-          </button>
-          <h2 class="text-lg font-semibold text-center">Client 1</h2>
-          <p class="text-sm text-gray-600 text-center font-[cursive]">
-            "Tailwind CSS makes everything easier for modern web development!"
-          </p>
-          <p class="pt-6 text-sm text-gray-600 text-center">
-            01-12-2024
-          </p>
-        </div>
+        <?php
+            }
+         } else {
+        ?>
+        <h2 class="text-lg text-center font-semibold text-red-400">Kamu belum memiliki catatan</h2>
+        <?php
+         }
+         ?>
         
       </div>
     </div>
@@ -332,48 +325,54 @@ if (!isset($_SESSION['id_user'])) {
                 </tr>
             </thead> -->
             <tbody>
+              <?php
+              $querytransaksi = $koneksi->query("SELECT * FROM transaksi WHERE id_user = '$id_user' ORDER BY id_transaksi DESC");
+              if (mysqli_num_rows($querytransaksi) > 0) {
+                while ($rowtransaksi = $querytransaksi->fetch_assoc()) {
+              ?>
             <tr class="border-b hover:bg-blue-200">
                   <th class="text-blue">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" style="color: red;" fill="currentColor" class="bi bi-bookmark-dash-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5M6 6a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z"/>
-                  </svg>
+                    <?php
+                    if ($rowtransaksi['jenis_transaksi'] == '+') {
+                    ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" style="color: green;" fill="currentColor" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
+                    </svg>
+                    <?php
+                    } else {
+                    ?>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" style="color: red;" fill="currentColor" class="bi bi-bookmark-dash-fill" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5M6 6a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1z"/>
+                    </svg>
+                    <?php
+                    }
+                    ?>
                   </th>
-                    <th scope="row" class="text-red-400 px-6 py-4 font-medium text-dark whitespace-nowrap">
-                        Rp 500.000
+                    <th scope="row" class="<?php if($rowtransaksi['jenis_transaksi'] == '+'){echo 'text-green-400';}else{echo 'text-red-400';}?> px-6 py-4 font-medium text-dark whitespace-nowrap">
+                        Rp <?php echo number_format($rowtransaksi['saldo_transaksi'], 0, ',', '.'); ?>
                     </th>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        Bayar Kost
+                        <?=$rowtransaksi['keterangan_transaksi']?>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        01-12-2024
+                        <?=$rowtransaksi['tanggal_transaksi']?>
                     </td>
                     <td class="px-6 py-4">
+                      <a href="hapus.php?jenis=transaksi&id=<?=$rowtransaksi['id_transaksi']?>">
                       <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="20px" height="20px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
                       </svg>
+                      </a>
                     </td>
                 </tr>
-                <tr class="border-b hover:bg-blue-200">
-                  <th class="text-blue">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="25px" height="25px" style="color: green;" fill="currentColor" class="bi bi-bookmark-plus-fill" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m6.5-11a.5.5 0 0 0-1 0V6H6a.5.5 0 0 0 0 1h1.5v1.5a.5.5 0 0 0 1 0V7H10a.5.5 0 0 0 0-1H8.5z"/>
-                  </svg>
-                  </th>
-                    <th scope="row" class="text-green-400 px-6 py-4 font-medium text-dark whitespace-nowrap">
-                        Rp 1.000.000
-                    </th>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        Dapat uang saku
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        01-12-2024
-                    </td>
-                    <td class="px-6 py-4">
-                      <svg xmlns="http://www.w3.org/2000/svg" style="color: red;" width="20px" height="20px" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                      </svg>
-                    </td>
-                </tr>
+                <?php
+                  }
+                } else {
+                ?>
+                <h2 class="text-lg text-center font-semibold text-red-400">Kamu belum memiliki riwayat transaksi</h2>
+                <?php
+                }
+                ?>
                 
                 <!-- <tr class="border-b hover:bg-blue-200">
                 <th class="text-blue">

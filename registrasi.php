@@ -91,7 +91,7 @@ if (isset($_SESSION['id_user'])) {
                   echo '<script>alert("Email Sudah Terdaftar")</script>';
                 } else {
                     if ($password == $password1) {
-                        $sql = "INSERT INTO user (name_user, email_user, password_user, image_user, saldo_user) VALUES ('$username', '$usermail', '$password', '', 0)";
+                        $sql = "INSERT INTO user (name_user, email_user, password_user, image_user, saldo_user) VALUES ('$username', '$usermail', '$password', '-', 0)";
                         if (mysqli_query($koneksi, $sql)) {
                           echo '<script>alert("Registrasi Berhasil")</script>';
                         } else {
